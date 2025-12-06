@@ -5,6 +5,7 @@ import re
 import logging
 import os 
 import json
+from utils.eval_utils_apbench import compare_answers_numeric, compare_answers_message
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,8 @@ def load_formatting_prompt(dataset_name):
         return 'Generate the final answer based on the reasoning process {reasoning} in the format: "Answer: ", followed by your numerical answer, which should be an integer without \',\' or other symbol. Do not include any other text.'
     elif 'musr' in dataset_name:
         return 'Generate the final answer for the query {query} based on the reasoning process {reasoning}. The generation should be in this format: "Answer: one of the options" (e.g. "Answer: A"). Do not include any other text.'
+    elif 'APBench' in dataset_name:
+        return 'Generate the final answer for the query {query} based on the reasoning process {reasoning} in this format: "Answer: \\[ \\boxed{{your_answer_here}} \\]". The entire answer should be contained completely within the \\boxed{{}} command. Do not include any other text.'
     else:
         raise ValueError(f"Dataset {dataset_name} not supported")
 
@@ -45,7 +48,7 @@ def weighted_majority_vote(answer_letters, weights=None):
         majority_answer = max(score.items(), key=lambda x: x[1])[0]
         return majority_answer, answer_letters.index(majority_answer)
 
-def obtain_majority_answers(dataset_name, generated_responses, weights=None):
+def obtain_majority_answers(dataset_name, generated_responses, format, weights=None):
     if 'MATH-500' in dataset_name:
         # For MATH-500 datasets, extract and compare answers
         answer_numbers = extract_answer(dataset_name, generated_responses)
@@ -66,12 +69,15 @@ def obtain_majority_answers(dataset_name, generated_responses, weights=None):
     elif 'musr' in dataset_name:
         answer_letters = extract_answer(dataset_name, generated_responses)
         answer_majority, answer_majority_index = weighted_majority_vote(answer_letters, weights=weights)
+    elif 'APBench' in dataset_name:
+        answers = extract_answer(dataset_name, generated_responses)
+        answer_majority, answer_majority_index = weighted_majority_vote(answers, weights=weights)        
     else:
         raise ValueError(f"Dataset {dataset_name} not supported")
     return answer_majority, answer_majority_index
 
 
-def check_response_accuracy(dataset_name, generated_responses, correct_answer, weights=None):
+def check_response_accuracy(dataset_name, generated_responses, correct_answer, weights=None, format_str=None, embedding_fn=None):
     """
     Checks the accuracy of generated responses based on the dataset type.
 
@@ -89,6 +95,19 @@ def check_response_accuracy(dataset_name, generated_responses, correct_answer, w
         answer_majority, answer_majority_index = weighted_majority_vote(answer_numbers, weights=weights)
         correct = compare_answers(correct_answer, answer_majority)
         correct_count = answer_numbers.count(correct_answer)
+    elif 'APBench' in dataset_name:
+        # For APBench datasets, if the format is numeric, message, or fallback to default
+        answers = extract_answer(dataset_name, generated_responses)
+        answer_majority, answer_majority_index = weighted_majority_vote(answers, weights=weights)
+        if format_str == 'numeric':
+            correct = compare_answers_numeric(correct_answer, answer_majority)
+            if correct is None: # Try message-based comparison as a fallback when correct checking is None
+                correct = compare_answers_message(correct_answer, answer_majority, embedding_fn=embedding_fn, llm_judge_arg='gpt')
+        elif format_str == 'message':
+            correct = compare_answers_message(correct_answer, answer_majority, embedding_fn=embedding_fn, llm_judge_arg='gpt')
+        else:
+            correct = compare_answers(correct_answer, answer_majority)
+        correct_count = answers.count(correct_answer)
     elif 'gsm8k' in dataset_name:
         # Default behavior for other datasets
         answer_numbers = extract_answer(dataset_name, generated_responses)
@@ -123,6 +142,8 @@ def check_response_accuracy(dataset_name, generated_responses, correct_answer, w
 
 def extract_answer(dataset_name, formatted_answers):
     if 'MATH-500' in dataset_name:
+        return [extract_bbox(ans) for ans in formatted_answers]
+    if 'APBench' in dataset_name:
         return [extract_bbox(ans) for ans in formatted_answers]
     elif 'gsm8k' in dataset_name:
         return [extract_number(ans) for ans in formatted_answers]

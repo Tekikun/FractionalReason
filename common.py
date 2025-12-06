@@ -24,7 +24,10 @@ def setup_seed(SEED):
 
 
 def setup_gpu(gpu_s):
-    os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_s)
+    if isinstance(gpu_s, (list, tuple)):
+        os.environ["CUDA_VISIBLE_DEVICES"] = ",".join(str(x) for x in gpu_s)
+    else:
+        os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_s)
 
 
 def setup_env(gpu_s, seed):
@@ -33,6 +36,8 @@ def setup_env(gpu_s, seed):
     setup_gpu(gpu_s)
     setup_seed(seed)
 
+def setup_openai_env(OPENAI_API_KEY):
+    os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 def str2bool(v):
     if isinstance(v, bool):

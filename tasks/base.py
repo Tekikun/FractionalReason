@@ -259,8 +259,8 @@ class BaseProbInference:
                 context_manager = ForwardTracer(model, forward_trace)
                 with context_manager:
                     _ = model(
-                    input_ids=torch.tensor(inputs[example_id][style_id]['input_ids']).unsqueeze(0).cuda(), 
-                    attention_mask = torch.tensor(inputs[example_id][style_id]['attention_mask']).unsqueeze(0).cuda(), 
+                    input_ids=torch.tensor(inputs[example_id][style_id]['input_ids']).unsqueeze(0).cuda(model.device), 
+                    attention_mask = torch.tensor(inputs[example_id][style_id]['attention_mask']).unsqueeze(0).cuda(model.device), 
                     output_attentions=False,
                     output_hidden_states=False
                     )

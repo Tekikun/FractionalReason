@@ -1,0 +1,102 @@
+nohup: ignoring input
+True
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:01<00:05,  1.77s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:03<00:04,  2.02s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:06<00:02,  2.09s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:07<00:00,  1.87s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:07<00:00,  1.92s/it]
+==================calculating icv==================
+====================
+Current experimentoutput file path:  ./records/plain_majority_vote/Qwen2.5_woodywu-APBench_0_30_ntrials_1_alpha_mode_uniform_alpha_a_0_alpha_b_0.15_FR_majority_vote.json
+====================
+Processing hard query:   0%|          | 0/30 [00:00<?, ?it/s]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [01:41<00:00, 101.56s/it][AProcessing trials: 100%|██████████| 1/1 [01:41<00:00, 101.56s/it]
+Processing hard query:   3%|▎         | 1/30 [01:41<49:05, 101.57s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [01:14<00:00, 74.42s/it][AProcessing trials: 100%|██████████| 1/1 [01:14<00:00, 74.42s/it]
+Processing hard query:   7%|▋         | 2/30 [02:55<39:56, 85.60s/it] 
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [01:16<00:00, 76.21s/it][AProcessing trials: 100%|██████████| 1/1 [01:16<00:00, 76.21s/it]
+Processing hard query:  10%|█         | 3/30 [04:12<36:35, 81.31s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:58<00:00, 58.60s/it][AProcessing trials: 100%|██████████| 1/1 [00:58<00:00, 58.60s/it]
+Processing hard query:  13%|█▎        | 4/30 [05:10<31:21, 72.35s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:26<00:00, 27.00s/it][AProcessing trials: 100%|██████████| 1/1 [00:26<00:00, 27.00s/it]
+Processing hard query:  17%|█▋        | 5/30 [05:37<23:19, 55.99s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:44<00:00, 44.97s/it][AProcessing trials: 100%|██████████| 1/1 [00:44<00:00, 44.97s/it]
+Processing hard query:  20%|██        | 6/30 [06:22<20:53, 52.25s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:44<00:00, 44.67s/it][AProcessing trials: 100%|██████████| 1/1 [00:44<00:00, 44.67s/it]
+Processing hard query:  23%|██▎       | 7/30 [07:07<19:04, 49.77s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:22<00:00, 22.68s/it][AProcessing trials: 100%|██████████| 1/1 [00:22<00:00, 22.68s/it]
+Processing hard query:  27%|██▋       | 8/30 [07:30<15:05, 41.14s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [01:44<00:00, 104.72s/it][AProcessing trials: 100%|██████████| 1/1 [01:44<00:00, 104.72s/it]
+Processing hard query:  30%|███       | 9/30 [09:14<21:21, 61.02s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:48<00:00, 48.05s/it][AProcessing trials: 100%|██████████| 1/1 [00:48<00:00, 48.05s/it]
+Processing hard query:  33%|███▎      | 10/30 [10:02<19:00, 57.01s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [01:48<00:00, 108.18s/it][AProcessing trials: 100%|██████████| 1/1 [01:48<00:00, 108.18s/it]
+Processing hard query:  37%|███▋      | 11/30 [11:51<23:00, 72.67s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [01:08<00:00, 68.35s/it][AProcessing trials: 100%|██████████| 1/1 [01:08<00:00, 68.35s/it]
+Processing hard query:  40%|████      | 12/30 [12:59<21:24, 71.36s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:30<00:00, 30.65s/it][AProcessing trials: 100%|██████████| 1/1 [00:30<00:00, 30.65s/it]
+Processing hard query:  43%|████▎     | 13/30 [13:30<16:43, 59.03s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:26<00:00, 26.38s/it][AProcessing trials: 100%|██████████| 1/1 [00:26<00:00, 26.38s/it]
+Processing hard query:  47%|████▋     | 14/30 [13:56<13:06, 49.17s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:53<00:00, 53.96s/it][AProcessing trials: 100%|██████████| 1/1 [00:53<00:00, 53.96s/it]
+Processing hard query:  50%|█████     | 15/30 [14:50<12:39, 50.61s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [01:50<00:00, 110.47s/it][AProcessing trials: 100%|██████████| 1/1 [01:50<00:00, 110.47s/it]
+Processing hard query:  53%|█████▎    | 16/30 [16:40<16:00, 68.63s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:31<00:00, 31.77s/it][AProcessing trials: 100%|██████████| 1/1 [00:31<00:00, 31.77s/it]
+Processing hard query:  57%|█████▋    | 17/30 [17:12<12:28, 57.55s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [01:08<00:00, 68.56s/it][AProcessing trials: 100%|██████████| 1/1 [01:08<00:00, 68.56s/it]
+Processing hard query:  60%|██████    | 18/30 [18:21<12:10, 60.86s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [01:27<00:00, 87.30s/it][AProcessing trials: 100%|██████████| 1/1 [01:27<00:00, 87.30s/it]
+Processing hard query:  63%|██████▎   | 19/30 [19:48<12:36, 68.80s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [02:01<00:00, 121.44s/it][AProcessing trials: 100%|██████████| 1/1 [02:01<00:00, 121.44s/it]
+Processing hard query:  67%|██████▋   | 20/30 [21:49<14:06, 84.61s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:44<00:00, 44.67s/it][AProcessing trials: 100%|██████████| 1/1 [00:44<00:00, 44.67s/it]
+Processing hard query:  70%|███████   | 21/30 [22:34<10:53, 72.62s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [01:27<00:00, 87.38s/it][AProcessing trials: 100%|██████████| 1/1 [01:27<00:00, 87.38s/it]
+Processing hard query:  73%|███████▎  | 22/30 [24:02<10:16, 77.05s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [01:11<00:00, 71.27s/it][AProcessing trials: 100%|██████████| 1/1 [01:11<00:00, 71.27s/it]
+Processing hard query:  77%|███████▋  | 23/30 [25:13<08:47, 75.32s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:07<00:00,  7.91s/it][AProcessing trials: 100%|██████████| 1/1 [00:07<00:00,  7.91s/it]
+Processing hard query:  80%|████████  | 24/30 [25:21<05:30, 55.09s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:22<00:00, 22.11s/it][AProcessing trials: 100%|██████████| 1/1 [00:22<00:00, 22.11s/it]
+Processing hard query:  83%|████████▎ | 25/30 [25:43<03:45, 45.19s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [02:03<00:00, 123.84s/it][AProcessing trials: 100%|██████████| 1/1 [02:03<00:00, 123.84s/it]
+Processing hard query:  87%|████████▋ | 26/30 [27:47<04:35, 68.79s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [01:29<00:00, 89.16s/it][AProcessing trials: 100%|██████████| 1/1 [01:29<00:00, 89.16s/it]
+Processing hard query:  90%|█████████ | 27/30 [29:16<03:44, 74.90s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:08<00:00,  8.42s/it][AProcessing trials: 100%|██████████| 1/1 [00:08<00:00,  8.42s/it]
+Processing hard query:  93%|█████████▎| 28/30 [29:24<01:49, 54.96s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [00:29<00:00, 29.15s/it][AProcessing trials: 100%|██████████| 1/1 [00:29<00:00, 29.15s/it]
+Processing hard query:  97%|█████████▋| 29/30 [29:53<00:47, 47.21s/it]
+Processing trials:   0%|          | 0/1 [00:00<?, ?it/s][A
+Processing trials: 100%|██████████| 1/1 [02:06<00:00, 126.03s/it][AProcessing trials: 100%|██████████| 1/1 [02:06<00:00, 126.03s/it]
+Processing hard query: 100%|██████████| 30/30 [31:59<00:00, 70.86s/it]Processing hard query: 100%|██████████| 30/30 [31:59<00:00, 64.00s/it]
+Test accuracy: 0.5583
+[Time] Experiment started at 2025-12-02 17:21:04
+[Time] Experiment completed at 2025-12-02 17:54:00
+[Time] Total elapsed time: 0.5489037909110387h

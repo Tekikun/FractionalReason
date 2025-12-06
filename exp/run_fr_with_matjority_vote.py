@@ -8,6 +8,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import json
 import os
+import time
 from common import setup_env
 from models import build_tokenizer, build_model
 from tasks import load_task 
@@ -35,7 +36,7 @@ class Evaluator:
             init_prompt (str): Initial prompt to be used for the evaluation.
             ds_args (dict): Dictionary containing dataset arguments such as dataset name and split.
             prm_model_args (dict): Dictionary containing PRM model arguments such as model name and device.
-            gen_model_args (dict): Dictionary containing generation model arguments such as model type, size, GPUs, seed, and 8-bit flag.
+            gen_model_args (dict): Dictionary containing generation model arguments such as model type, size, GPUs, cuda device, seed, and 8-bit flag.
             root_path (str, optional): Path to save the evaluation records. Defaults to './records'.
         """
         if not os.path.exists(root_path):
@@ -53,7 +54,7 @@ class Evaluator:
             gen_model_args['model_type'], gen_model_args['model_size'], padding_side="right"
         )
         self.gen_model = build_model(
-            gen_model_args['model_type'], gen_model_args['model_size'], gen_model_args['in_8bit']
+            gen_model_args['model_type'], gen_model_args['model_size'], gen_model_args['in_8bit'], gen_model_args['cuda_device']
         )
 
         if 'R1' in gen_model_args['model_type']:
@@ -82,7 +83,26 @@ class Evaluator:
         demos_with_templates = apply_template(dataset_demo, self.tokenizer)
         self.icvs_to_shift = self.prepare_icv(demos_with_templates, rank=1, n=256)
         
-        
+    def get_embedding(self, text_or_texts):
+        """
+        Accept either a single str or a list of strs.
+        Returns a single numpy vector (if single input) or list of vectors (if list input).
+        """
+        single = isinstance(text_or_texts, str)
+        texts = [text_or_texts] if single else text_or_texts
+
+        # Batch tokenize/pad
+        encoded = self.eval_tokenizer(texts, return_tensors="pt", padding=True,
+                                    truncation=True, max_length=1024).to(self.eval_model.device)
+
+        with torch.no_grad():
+            outputs = self.eval_model(**encoded, output_hidden_states=True, use_cache=False)
+
+        last_hidden = outputs.hidden_states[-1]  # [batch, seq_len, hidden]
+        emb = last_hidden.mean(dim=1).cpu().numpy()  # (batch, hidden)
+
+        return emb[0] if single else [e for e in emb]
+    
     def prepare_icv(self, demos_with_templates, n=256, rank=1):
         """
         Prepares the ICV (Inverse Concept Variance) by sampling and tokenizing data.
@@ -180,7 +200,7 @@ class Evaluator:
         self.clean_icv_layers()
         if not isinstance(alpha, list):
             alpha = [alpha]
-        add_icv_layers(self.gen_model, self.icvs_to_shift.cuda(), alpha)
+        add_icv_layers(self.gen_model, self.icvs_to_shift.cuda(self.gen_model.device), alpha)
         decoded_output = self.generate(input_ids, num_return_sequences=num_return_sequences)
         return decoded_output
 
@@ -243,6 +263,7 @@ class Evaluator:
                 for query_id in tqdm(range(start_sample, end_sample), desc="Processing hard query"): 
                     query = self.dataset[query_id]['question']
                     answer = self.dataset[query_id]['answer']
+                    format = self.dataset[query_id].get('format', None)
 
                     messages_query = [
                         {"role": "user", "content": init_prompt + ' ' + query},
@@ -274,7 +295,7 @@ class Evaluator:
                         # Create a list of answer frequencies
                         all_solutions.extend(formatted_answers)
                         
-                        _, ans_majority_index = obtain_majority_answers(self.ds_args['dataset_name'], formatted_answers, weights=None)
+                        _, ans_majority_index = obtain_majority_answers(self.ds_args['dataset_name'], formatted_answers, format, weights=None)
 
                         ans.append(formatted_answers[ans_majority_index])
                         ans_all.extend(formatted_answers)
@@ -287,15 +308,17 @@ class Evaluator:
                                           
                         
                     # formating the final answer into Answer: #number to calucalte the accuracy
-                    correct, correct_count, _ = check_response_accuracy(self.ds_args['dataset_name'], ans, answer, weights=None)
-                    correct_all, _, _ = check_response_accuracy(self.ds_args['dataset_name'], ans_all, answer, weights=None)
+                    correct, correct_count, _ = check_response_accuracy(self.ds_args['dataset_name'], ans, answer, weights=None,
+                                                                        format_str=format, embedding_fn=self.get_embedding)
+                    # correct_all, _, _ = check_response_accuracy(self.ds_args['dataset_name'], ans_all, answer, weights=None, 
+                                                                # format_str=format, embedding_fn=self.get_embedding)
                     correctness += correct
-                    correctness_v2 += correct_all
+                    # correctness_v2 += correct_all
                     total_samples += 1
 
                     json.dump({
                         'acc_so_far': correctness / total_samples if total_samples else 0,
-                        'acc_so_far_v2': correctness_v2 / total_samples if total_samples else 0,
+                        # 'acc_so_far_v2': correctness_v2 / total_samples if total_samples else 0,
                         'query_id': query_id,
                         'query': query,
                         'generations': ans_solutions,
@@ -322,20 +345,22 @@ if __name__ == "__main__":
     parser.add_argument('--num_trials', type=int, default=20, help='Number of trials for generation')
     parser.add_argument('--model_type', type=str, default='llama-3', help='model to use')
     parser.add_argument('--model_size', type=str, default='8b', help='model size to use')
-    parser.add_argument('--dataset', type=str, default='gsm8k', choices=['gsm8k', 'HuggingFaceH4/MATH-500', 'Idavidrein/gpqa'], help='dataset to use')
+    parser.add_argument('--dataset', type=str, default='gsm8k', choices=['gsm8k', 'HuggingFaceH4/MATH-500', 'Idavidrein/gpqa', 'woodywu/APBench'], help='dataset to use')
     parser.add_argument('--split', type=str, default='test', help='split of the dataset to use')
     parser.add_argument('--alpha_mode', type=str, default='uniform', help='uniform or normal')
     parser.add_argument('--root_path', type=str, default='./records/plain_majority_vote', help='root path to save the records')
     parser.add_argument('--num_samples', type=int, default=-1, help='number of samples to use')
     parser.add_argument('--alpha_a', type=float, default=0, help='lower bound of the alpha range')
     parser.add_argument('--alpha_b', type=float, default=0.15, help='upper bound of the alpha range')
+    parser.add_argument('--cuda_device', type=int, default=0, help='Cuda device (single) to use')
     args = parser.parse_args()
 
     # Original single-process usage
     gen_model_args = {
         "model_type": args.model_type,
         "model_size": args.model_size,
-        "gpus": 1,
+        "gpus": [0,1],
+        "cuda_device": args.cuda_device,
         "seed": 42,
         "in_8bit": True
     }
@@ -354,17 +379,26 @@ if __name__ == "__main__":
 
     print(torch.cuda.is_available())
 
+    start_time = time.time()
     # Initialize generation model and tokenizer
     setup_env(gpu_s=gen_model_args['gpus'], seed=gen_model_args['seed'])
 
-    init_prompt = 'Solve the problem.'
-    if args.dataset == 'musr':
-        init_prompt = ''# if args.dataset == 'HuggingFaceH4/MATH-500' and args.model_type == 'R1Qwen':
-    #     init_prompt = 'Solve the problem. Put your final answer within \\boxed{{}}.'
+    # init_prompt = 'Solve the problem.'
+    # if args.dataset == 'musr':
+    #     init_prompt = ''# if args.dataset == 'HuggingFaceH4/MATH-500' and args.model_type == 'R1Qwen':
+    init_prompt = 'Solve the problem. Put your final answer within \\boxed{{}}.'
     # if args.dataset == 'mmlu' and args.model_type == 'llama-3':
     #     init_prompt = 'Answer the question with A/B/C/D in the end.'
     evaluator = Evaluator(args, init_prompt, dataset_args, prm_model_args, gen_model_args, root_path=args.root_path)
 
     # Run optimization on a subset of the dataset
     accuracy = evaluator.run_evaluation(start_sample=start_sample, n_samples=args.num_samples, num_trials=args.num_trials, alpha_a = args.alpha_a, alpha_b = args.alpha_b)
+    
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    hours = float(elapsed_time / 3600)
+    
     print(f"Test accuracy: {accuracy:.4f}")
+    print(f"[Time] Experiment started at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))}")
+    print(f"[Time] Experiment completed at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end_time))}")
+    print(f"[Time] Total elapsed time: {hours}h")

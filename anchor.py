@@ -9,6 +9,7 @@ logger_root = root.joinpath("logger")
 dump_root = root.joinpath("dump")
 
 # modify to /your/folder/contains/huggingface/cache
-checkpoints_root = Path("/your/folder/contains/huggingface/cache")
+# checkpoints_root = Path.home()/ Path(".cache/huggingface/hub/checkpoints")
+checkpoints_root = Path.home()/ Path(".cache/huggingface/hub")
 
 hf_datasets_root = root.joinpath("datasets")

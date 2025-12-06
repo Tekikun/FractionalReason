@@ -85,3 +85,6 @@ icv_*.pt
 
 # Demo data
 demo_data.json
+
+# Keys 
+openai_key.py

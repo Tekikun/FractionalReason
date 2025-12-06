@@ -37,6 +37,21 @@ def load_and_prepare_dataset(ds_args):
 
         return all_data
     
+    if ds_args['dataset_name'] == 'woodywu/APBench':
+        ds = load_dataset(ds_args['dataset_name'])['train']
+        all_data = []
+        for item in ds:
+            content = item['Content']
+            for q in item['Questions']:
+                question_text = f'{content}\n\nQuestion:\n{q["Question"]}'
+                all_data.append({
+                    'question': question_text.strip(),
+                    'answer': q['Answer'].strip(),
+                    'format': q.get('Format', '').strip(),
+                })
+
+        return all_data
+    
     try:
         dataset = load_dataset(ds_args['dataset_name'], "main")[ds_args['split']]
     except ValueError:
