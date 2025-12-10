@@ -122,6 +122,7 @@ def tokenize_each_demonstration(demonstration_list, tokenizer, dataset_name=None
         return tokenized_demonstration_list
 
 def apply_template(all_demos_reflect, tokenizer):
+    print("Applying general CoT")
     all_demos_reflect_ = []
     for i in range(len(all_demos_reflect)):
         # pos_prompt = 'Solve the mathematics problem with step-by-step detailed reasoning. '
@@ -135,19 +136,65 @@ def apply_template(all_demos_reflect, tokenizer):
         all_demos_reflect_.append((demos_with_template_neg, demos_with_template_pos))
     return all_demos_reflect_
 
-def apply_template_correctness(all_demos_reflect, tokenizer):
+def apply_template_knowledge(all_demos_reflect, tokenizer):
+    print("Applying knowledge retrieval ")
     all_demos_reflect_ = []
     for i in range(len(all_demos_reflect)):
-        pos_prompt = 'Answer the question with knowledge retrieval. '
-        neg_prompt = 'Answer the question. '
-        demos_with_template_pos = pos_prompt + all_demos_reflect[i]['question']  + '\n\n' + all_demos_reflect[i]['answer'].split('####')[0].strip() # + '\n\n' + all_demos_reflect[i]["answer"]
-        demos_with_template_neg = neg_prompt + all_demos_reflect[i]['question']  + '\n\n' + all_demos_reflect[i]['solution'].split('####')[0].strip() # + '\n\n' + all_demos_reflect[i]["answer"].split('####')[-1].strip()
-        # demos_with_template_pos = pos_prompt + all_demos_reflect[i]['question'] + '\n\n' + all_demos_reflect[i]['step_without_mistake'] # + '\n\n' + all_demos_reflect[i]["answer"]
-        # demos_with_template_neg = neg_prompt + all_demos_reflect[i]['question'] + '\n\n' + all_demos_reflect[i]['step_with_mistake'] # + '\n\n' + all_demos_reflect[i]["answer"].split('####')[-1].strip()
+        pos_prompt = 'Solve the problem with direct answering with knowledge retrieval. '
+        neg_prompt = 'Solve the problem with direct answering. '
+        demos_with_template_pos = pos_prompt + all_demos_reflect[i]['question'] # + '\n\n' + all_demos_reflect[i]['answer'].split('####')[0].strip() # + '\n\n' + all_demos_reflect[i]["answer"]
+        demos_with_template_neg = neg_prompt + all_demos_reflect[i]['question'] # + '\n\n' + all_demos_reflect[i]['solution'].split('####')[0].strip() # + '\n\n' + all_demos_reflect[i]["answer"].split('####')[-1].strip()
         
         all_demos_reflect_.append((demos_with_template_neg, demos_with_template_pos))
     return all_demos_reflect_
 
+def apply_template_math(all_demos_reflect, tokenizer):
+    print("Applying math focus ")
+    all_demos_reflect_ = []
+    for i in range(len(all_demos_reflect)):
+        pos_prompt = 'Solve the problem with careful algebraic step or formula choice, step-by-step mathematical calculations, units and numeric values. '
+        neg_prompt = 'Solve the problem with direct answering. '
+        demos_with_template_pos = pos_prompt + all_demos_reflect[i]['question'] # + '\n\n' + all_demos_reflect[i]['answer'].split('####')[0].strip() # + '\n\n' + all_demos_reflect[i]["answer"]
+        demos_with_template_neg = neg_prompt + all_demos_reflect[i]['question'] # + '\n\n' + all_demos_reflect[i]['solution'].split('####')[0].strip() # + '\n\n' + all_demos_reflect[i]["answer"].split('####')[-1].strip()
+        
+        all_demos_reflect_.append((demos_with_template_neg, demos_with_template_pos))
+    return all_demos_reflect_
+
+def apply_template_symbolic(all_demos_reflect, tokenizer):
+    print("Applying symbolic focus ")
+    all_demos_reflect_ = []
+    for i in range(len(all_demos_reflect)):
+        pos_prompt = 'Solve the problem by first expressing all relationships symbolically, deriving the correct formula, and only then substituting numerical values. '
+        neg_prompt = 'Solve the problem with direct answering. '
+        demos_with_template_pos = pos_prompt + all_demos_reflect[i]['question'] # + '\n\n' + all_demos_reflect[i]['answer'].split('####')[0].strip() # + '\n\n' + all_demos_reflect[i]["answer"]
+        demos_with_template_neg = neg_prompt + all_demos_reflect[i]['question'] # + '\n\n' + all_demos_reflect[i]['solution'].split('####')[0].strip() # + '\n\n' + all_demos_reflect[i]["answer"].split('####')[-1].strip()
+        
+        all_demos_reflect_.append((demos_with_template_neg, demos_with_template_pos))
+    return all_demos_reflect_
+
+def apply_template_graph(all_demos_reflect, tokenizer):
+    print("Applying graph focus ")
+    all_demos_reflect_ = []
+    for i in range(len(all_demos_reflect)):
+        pos_prompt = 'Solve the problem by describing relationships using graphical reasoning before performing calculations. '
+        neg_prompt = 'Solve the problem with direct answering. '
+        demos_with_template_pos = pos_prompt + all_demos_reflect[i]['question'] # + '\n\n' + all_demos_reflect[i]['answer'].split('####')[0].strip() # + '\n\n' + all_demos_reflect[i]["answer"]
+        demos_with_template_neg = neg_prompt + all_demos_reflect[i]['question'] # + '\n\n' + all_demos_reflect[i]['solution'].split('####')[0].strip() # + '\n\n' + all_demos_reflect[i]["answer"].split('####')[-1].strip()
+        
+        all_demos_reflect_.append((demos_with_template_neg, demos_with_template_pos))
+    return all_demos_reflect_
+
+def apply_template_classifier(all_demos_reflect, tokenizer):
+    print("Applying problem classifier focus and concept review ")
+    all_demos_reflect_ = []
+    for i in range(len(all_demos_reflect)):
+        pos_prompt = 'Solve the problem by classifying the problem type and reviewing relevant concepts. '
+        neg_prompt = 'Solve the problem with direct answering. '
+        demos_with_template_pos = pos_prompt + all_demos_reflect[i]['question'] # + '\n\n' + all_demos_reflect[i]['answer'].split('####')[0].strip() # + '\n\n' + all_demos_reflect[i]["answer"]
+        demos_with_template_neg = neg_prompt + all_demos_reflect[i]['question'] # + '\n\n' + all_demos_reflect[i]['solution'].split('####')[0].strip() # + '\n\n' + all_demos_reflect[i]["answer"].split('####')[-1].strip()
+        
+        all_demos_reflect_.append((demos_with_template_neg, demos_with_template_pos))
+    return all_demos_reflect_
 
 class CompactJSONEncoder(json.JSONEncoder):
     """A JSON Encoder that puts small containers on single lines."""

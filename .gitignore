@@ -22,8 +22,8 @@ wheels/
 MANIFEST
 
 # Jupyter Notebook
-.ipynb_checkpoints
-*.ipynb
+# .ipynb_checkpoints
+# *.ipynb
 
 # PyTorch
 *.pth
@@ -57,6 +57,7 @@ Thumbs.db
 # Logs
 *.log
 logs/
+*.out
 
 # Data
 data/
